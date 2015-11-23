@@ -1,6 +1,6 @@
 var mongo = require('../data/mongo');
 
-function IncidentModel(type, priority, regressiveTime, operatorCreate, dateHourCreate, adress, status, comment, operatorClose, dateHourClose){
+function IncidentModel(type, priority, regressiveTime, operatorCreate, dateHourCreate, adress, status, comment, operatorClose, dateHourClose, dateHourLineStop, operatorLineStop){
 	
 			this.type = type;
 			this.priority = priority;
@@ -12,12 +12,15 @@ function IncidentModel(type, priority, regressiveTime, operatorCreate, dateHourC
 			this.comment = comment;
 			this.operatorClose = operatorClose;
 			this.dateHourClose = dateHourClose;
+			this.dateHourLineStop = dateHourLineStop;
+			this.operatorLineStop = operatorLineStop;
 
 }
 
 
 
 IncidentModel.prototype.create = function(data, callback){
+    console.log("IncidentModel::Create::data recived on body: " + data);
 	mongo.collection('incident').save(data, callback);
 };
 
@@ -34,13 +37,15 @@ IncidentModel.prototype.filter = function(_status, callback){
 };	
 
 IncidentModel.prototype.update = function(data, _id, callback){
-	console.log(data);
-	console.log(_id);
 	mongo.collection('incident').update({"_id": mongo.ObjectId(_id) }, data,callback);
 };
 
 IncidentModel.prototype.delete = function(_id, callback){
-	mongo.collection('incident').remove({_id: _id}, callback);
+	mongo.collection('incident').remove({"_id": mongo.ObjectId(_id) }, callback);
+};
+
+IncidentModel.prototype.deleteAll = function(callback){
+	mongo.collection('incident').remove({}, callback);
 };
 
 
